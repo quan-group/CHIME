@@ -1,5 +1,6 @@
 library(ggplot2)
 library(knitr)
+library(plyr)
 
 
 server <- function(input, output){

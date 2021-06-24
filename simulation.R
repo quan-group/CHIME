@@ -1,22 +1,17 @@
 library(rms)
-# load("outcomes_model/final_episodic_models90+death.Rdata") # 6 outcomes
-# load("outcomes_model/final_chronic_models.Rdata") # 6 outcomes
-# load("outcomes_model/final_dm_model90_excluded.Rdata") # 1 outcome
+rm(list = ls())
+load("outcomes_model/final_episodic_models90.Rdata") # 6 outcomes
+load("outcomes_model/final_chronic_models.Rdata") # 6 outcomes
+load("outcomes_model/final_dm_model90.Rdata") # 1 outcome
 
 # total outcomes by year
-# all_models <- c(chronic_outcomes, episodic_outcomes, list(dm_model = dm_model))
-# rm(chronic_outcomes, episodic_outcomes, dm_model); gc()
-# all patients
+all_models <- c(chronic_outcomes, episodic_outcomes, list(dm_model = dm_model))
+ rm(chronic_outcomes, episodic_outcomes, dm_model); gc()
+#  all patients
 
 set.seed(123)
 
 start_time <- Sys.time()
-
-FUN.outcomes <- function(model, patient, year){
-  prob <- survest(model, patient, times = 365.25*(year))$surv
-  sample(c(1, 0), size = 1, replace = T, prob = c(1-prob, prob))
-}
-
 
 FUN.run_outcomes <- function(x, year) {
   x[year, "amputation"] <- FUN.outcomes(all_models[["amputation_model"]][[1]][[1]], x[year,], year)
@@ -44,10 +39,17 @@ FUN.run_outcomes <- function(x, year) {
 
 patient <- lapply(patient, function(x) FUN.run_outcomes(x, 1))
 
+
 FUN.outcomes2 <- function(model, patient_previous, patient_current, year){
   prob <- survest(model, patient_current, times = 365.25*(year))$surv/survest(model, patient_previous, times = 365.25*(year-1))$surv
   prob <- min(prob, 1)
   sample(c(1, 0), size = 1, replace = T, prob = c(1-prob, prob))
+}
+
+FUN.outcomes2_death <- function(model, patient_previous, patient_current, year){
+  prob <- survest(model, patient_current, times = 365.25*(year-1))$surv - survest(model, patient_current, times = 365.25*(year))$surv
+  prob <- max(0, prob)
+  sample(c(1, 0), size = 1, replace = T, prob = c(prob, 1-prob))
 }
 
 FUN.run_outcomes2 <- function(x, year) {
@@ -64,7 +66,7 @@ FUN.run_outcomes2 <- function(x, year) {
   x[year, "pvd"] <- ifelse(x[year, "history_pvd"] == 1, 1, FUN.outcomes2(all_models[["pvd_model"]][[1]][[1]], x[year-1,], x[year,], year))
   x[year, "retinopathy"] <- ifelse(x[year, "history_retinopathy"] == 1, 1, FUN.outcomes2(all_models[["retinopathy_model"]][[1]][[1]], x[year-1,], x[year,], year))
   # x[year, "haemodialysis"] <- ifelse(x[year, "history_haemodialysis"] == 1, 1, FUN.outcomes2(all_models[["haemodialysis_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  x[year, "death"] <- FUN.outcomes2(all_models[["death_model"]][[1]][[1]], x[year-1,], x[year,], year)
+  x[year, "death"] <- FUN.outcomes2_death(all_models[["death_model"]][[1]][[1]], x[year-1,], x[year,], year)
   # dm_model
   if (x[year, "status"] == 1) {
     x[year, "status"] <- FUN.outcomes2(all_models[["dm_model"]][[1]][[1]], x[year-1,], x[year,], year) + 1
@@ -96,7 +98,7 @@ FUN.run_additional_year <- function(x, year){
     return(x)
   }
 }
-'  
+
 patient <- lapply(patient, function(x) FUN.run_additional_year(x, 2))
 patient <- lapply(patient, function(x) FUN.run_additional_year(x, 3))
 patient <- lapply(patient, function(x) FUN.run_additional_year(x, 4))
@@ -116,7 +118,4 @@ patient <- lapply(patient, function(x) FUN.run_additional_year(x, 17))
 patient <- lapply(patient, function(x) FUN.run_additional_year(x, 18))
 patient <- lapply(patient, function(x) FUN.run_additional_year(x, 19))
 patient <- lapply(patient, function(x) FUN.run_additional_year(x, 20))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 21))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 22))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 23))
-'
+
