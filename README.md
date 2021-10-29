@@ -14,8 +14,7 @@ J Quan, CS Ng
 Quan J, Ng CS, Kwok HHY, Zhang A, Yuen YH, Choi C-H, et al. (2021) Development and validation of the CHIME simulation model to assess lifetime health outcomes of prediabetes and type 2 diabetes in Chinese populations: A modeling study. *PLoS Med* 18(6): e1003692. https://doi.org/10.1371/journal.pmed.1003692
 
 
-
+---
 ### Model dataset @ HKU Data Hub 
 
-CHIME_models.Rdata 
-https://dx.doi.org/10.25442/hku.16864042
+[CHIME_models.Rdata](https://dx.doi.org/10.25442/hku.16864042)
