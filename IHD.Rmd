@@ -1,0 +1,38 @@
+---
+title: "IHD"
+output: html_document
+---
+
+## Ischemic heart disease
+
+\[{\rm Prob}\{T\geq t\} = 1-\Phi( \frac{\log(t)-X\beta}{2.887255} ){\rm \ \ where} \\ \]
+$$
+\begin{eqnarray*}
+{X\hat{\beta}=}\\\\
+& & 12.373 \\\\
+& &  -0.06695749 {\rm Age}+3.480066\!\times\!10^{-5}({\rm Age}-45.54415)^{3}  \\\\
+& &   -6.61218\!\times\!10^{-5}({\rm Age}-61.29227)^{3}+3.132114\!\times\!10^{-5}({\rm Age}-78.78987)^{3}  \\\\
+& &  -0.2215785  {\rm Duration}+0.001908385 ({\rm Duration}-0.04654346)^{3}  \\\\
+& &   -0.003783345({\rm Duration}-4.960986)^{3}+0.00187496  ({\rm Duration}-9.963039)^{3}  \\\\
+& &  -0.008603955 {\rm SBP}+4.500772\!\times\!10^{-7 }({\rm SBP}-116)^{3}-8.729946\!\times\!10^{-7}({\rm SBP}-134.1667)^{3}  \\\\
+& &   +4.229174\!\times\!10^{-7 }({\rm SBP}-153.5)^{3}  \\\\
+& & + 0.03704689   {\rm DBP}-5.441537\!\times\!10^{-5}({\rm DBP}-65)^{3}+0.0001066541 ({\rm DBP}-77)^{3}  \\\\
+& &   -5.223875\!\times\!10^{-5}({\rm DBP}-89.5)^{3}  \\\\
+& & + 0.9058544 {\rm HDL}-0.2435297({\rm HDL}-0.915)^{3}+0.406135  ({\rm HDL}-1.273333)^{3}  \\\\
+& &   -0.1626053({\rm HDL}-1.81)^{3}  \\\\
+& & + 0.2924694  {\rm LDL}-0.05240616({\rm LDL}-2)^{3}+0.09842797 ({\rm LDL}-2.96955)^{3}  \\\\
+& &   -0.04602182({\rm LDL}-4.0736)^{3}  \\\\
+& &  -0.2613968  {\rm WBC}+0.005757127 ({\rm WBC}-5)^{3}-0.009452511({\rm WBC}-7.175)^{3}  \\\\
+& &   +0.003695384 ({\rm WBC}-10.56348)^{3}  \\\\
+& & + 0.1612254    {\rm Hemoglobin}-0.0003892057({\rm Hemoglobin}-11.4)^{3}  \\\\
+& &  +0.0008597028 ({\rm Hemoglobin}-13.65)^{3}  \\\\
+& &   -0.0004704971({\rm Hemoglobin}-15.51125)^{3}  +0.7178127\:{\rm female} \\\\
+& &  -0.1904222[{\rm Ex\ smoker}]+0.1140562 [{\rm Non\ smoker}] \\\\
+& &  -0.2528112[{\rm mild\ CKD}]-0.6643635[{\rm mild\ moderate\ CKD}]-0.8939549[{\rm moderate\ severe\ CKD}] \\\\
+& &  -1.1436   [{\rm severe\ CKD}]-1.222774 [{\rm kidney\ failure}] -0.2114733\:{\rm bprx} \\\\
+& &  -0.6231384\:{\rm Statins} -0.6934588\:{\rm History\ of\ heart\ failure} \\\\
+& &  +0.5835082\:{\rm History\ of\ cerebrovascular\ disease} \\\\
+\end{eqnarray*}
+$$
+and \([c]=1\) if subject is in group \(c\), \(0\) otherwise; \((x)=x\) if \(x > 0\), \(0 \) otherwise
+

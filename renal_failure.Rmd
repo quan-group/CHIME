@@ -1,0 +1,37 @@
+---
+title: "renal failure"
+output: html_document
+---
+## Renal failure
+
+\[{\rm Prob}\{T\geq t\} = [1+\exp( \frac{\log(t)-X\beta}{0.7981171} )]^{-1}{\rm \ \ where} \\ \]
+$$
+\begin{eqnarray*}
+{X\hat{\beta}=}\\\\
+& & 6.166196 \\\\
+& &  -0.004849129 {\rm Age}-1.901472\!\times\!10^{-5}({\rm Age}-45.86995)^{3}  \\\\
+& &   +3.604495\!\times\!10^{-5 }({\rm Age}-61.54141)^{3}-1.703024\!\times\!10^{-5}({\rm Age}-79.03901)^{3}  \\\\
+& &  -0.1409224  {\rm Duration}+0.0007897111({\rm Duration}-0.04654346)^{3}  \\\\
+& &   -0.00156559 ({\rm Duration}-4.960986)^{3}+0.0007758793({\rm Duration}-9.963039)^{3}  \\\\
+& &  -0.02053097{\rm HbA1c}-0.02178857({\rm HbA1c}-5.6)^{3}+0.02582349 ({\rm HbA1c}-6.1)^{3}  \\\\
+& &   -0.00403492({\rm HbA1c}-8.8)^{3}  \\\\
+& &  -0.01317253  {\rm SBP}-5.375805\!\times\!10^{-6}({\rm SBP}-116)^{3}+1.033809\!\times\!10^{-5 }({\rm SBP}-134)^{3}  \\\\
+& &   -4.962282\!\times\!10^{-6}({\rm SBP}-153.5)^{3}  \\\\
+& & + 0.02357291   {\rm DBP}-3.271212\!\times\!10^{-5}({\rm DBP}-64.66667)^{3}+6.498808\!\times\!10^{-5 }({\rm DBP}-77)^{3}  \\\\
+& &   -3.227596\!\times\!10^{-5}({\rm DBP}-89.5)^{3}  \\\\
+& &  -0.4526705{\rm Triglycerides}+0.08718189({\rm Triglycerides}-0.725)^{3}-0.1285051({\rm Triglycerides}-1.299)^{3}  \\\\
+& &   +0.04132321({\rm Triglycerides}-2.51)^{3}  \\\\
+& &  -0.008416627{\rm LDL}-0.03346604 ({\rm LDL}-1.96452)^{3}+0.06281429  ({\rm LDL}-2.9418)^{3}  \\\\
+& &   -0.02934825 ({\rm LDL}-4.0562)^{3}  \\\\
+& &  -0.154757   {\rm WBC}+0.004885142 ({\rm WBC}-5.03)^{3}-0.008003012({\rm WBC}-7.2)^{3}  \\\\
+& &   +0.00311787  ({\rm WBC}-10.6)^{3}  \\\\
+& & + 0.5700462  {\rm Hemoglobin}-0.00978487({\rm Hemoglobin}-11.4)^{3}  \\\\
+& &   +0.02168539 ({\rm Hemoglobin}-13.65)^{3}-0.01190052({\rm Hemoglobin}-15.5)^{3}  \\\\
+& &  +1.081168\:{\rm female} -0.2573695\:{\rm status} \\\\
+& &  -0.1490706 [{\rm Ex\ smoker}]-0.05581874[{\rm Non\ smoker}] -0.2720151\:{\rm bprx} \\\\
+& &  -0.1631902\:{\rm History\ of\ cataract} -0.6716275\:{\rm History\ of\ heart\ failure} \\\\
+& &  -0.4899921\:{\rm History\ of\ retinopathy} -0.3150657\:{\rm History\ of\ PVD} \\\\
+& &  -0.1800056\:{\rm History\ of\ cerebrovascular\ disease} \\\\
+\end{eqnarray*}
+$$
+and \([c]=1\) if subject is in group \(c\), \(0\) otherwise; \((x)=x\) if \(x > 0\), \(0 \) otherwise

@@ -3,8 +3,12 @@ library(shiny)
 
 
 ui <- fluidPage(
-  titlePanel("CHIME model: Chinese Hong Kong Integrated Modelling and Evaluation of diabetes and prediabetes"),
+  titlePanel("CHIME outcomes model for diabetes and prediabetes"),
+  
+  
   tabsetPanel(id = "all",
+              
+            
     tabPanel("Diabetes",  fluid = F, 
              sidebarLayout(
               sidebarPanel(width = 2,
@@ -69,10 +73,9 @@ ui <- fluidPage(
                 h5("Hemoglobin: 13.68"), 
                 h5("No previous history of complications")
               ),
-              mainPanel(uiOutput("dm_plot")))) ,
+              mainPanel(uiOutput("dm_plot")))),
                 
-                
-                
+    
     
     tabPanel("Pre-diabetes", id = "pre_dm", fluid = TRUE, 
              sidebarLayout(
@@ -150,8 +153,39 @@ ui <- fluidPage(
                                                         "Stroke" = "Stroke"), 
                                          selected = "Amputation")),
                mainPanel(fluidRow(uiOutput("equation"))), 
-    )
-
-)))
+    )),
+    
+    tabPanel("Publication & Dataset", id = "eq", fluid = TRUE, 
+             mainPanel(
+               
+               h4("Chinese Hong Kong Integrated Modelling and Evaluation (CHIME) of diabetes and prediabetes",
+               br()),
+               
+               p(br(),
+                 "J Quan, CS Ng", 
+                 br(), 
+                 "School of Public Health, LKS Faculty of Medicine, The University of Hong Kong", 
+                 br(),
+                 br()),
+               
+               p(strong("Citation:"), 
+                 br(),
+                 strong("Quan J"), ", Ng CS", "Kwok HHY, Zhang A, Yuen YH, Choi CH, Siu SC, Tang SY, Wat NM, Woo J, Eggleston K, Leung GM. (2021)",
+                 "Development and validation of the CHIME simulation model to assess lifetime health outcomes of prediabetes and type 2 diabetes in Chinese populations: A modeling study.", em(strong("PLOS Medicine")), "18(6): e1003692.", a("https://doi.org/10.1371/journal.pmed.1003692", href="https://doi.org/10.1371/journal.pmed.1003692")
+                 ),
+               
+               p(br(),
+                 strong("Model dataset @ HKU Data Hub"), 
+                 br(), 
+                 a("CHIME_models.Rdata", href="https://dx.doi.org/10.25442/hku.16864042")),
+               
+               p(br(),
+                 strong("Code @ GitHub"), 
+                 br(),
+                 a("https://github.com/quan-group/CHIME", href="https://github.com/quan-group/CHIME"))
+               
+               )
+             )
+))
 
 

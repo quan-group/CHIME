@@ -1,0 +1,30 @@
+---
+title: "neuropathy"
+output: html_document
+---
+
+## Neuropathy
+
+\[{\rm Prob}\{T\geq t\} = \exp[-\exp( \frac{\log(t)-X\beta}{1.166244} )]{\rm \ \ where} \\ \]
+$$
+\begin{eqnarray*}
+{X\hat{\beta}=}\\\\
+& & 14.33607 \\\\
+& &  -0.1805239 {\rm Duration}+0.001101617({\rm Duration}-0.04654346)^{3}  \\\\
+& &   -0.00218394({\rm Duration}-4.960986)^{3}+0.001082323({\rm Duration}-9.963039)^{3}  \\\\
+& &  -0.3248836  {\rm HbA1c}+0.008286954 ({\rm HbA1c}-5.6)^{3}-0.009821576({\rm HbA1c}-6.1)^{3}  \\\\
+& &   +0.001534621 ({\rm HbA1c}-8.8)^{3}  \\\\
+& & + 0.001098733  {\rm SBP}-1.169469\!\times\!10^{-5}({\rm SBP}-116)^{3}+2.242102\!\times\!10^{-5 }({\rm SBP}-134)^{3}  \\\\
+& &   -1.072634\!\times\!10^{-5}({\rm SBP}-153.625)^{3}  \\\\
+& & + 0.1214197    {\rm BMI}-0.000815454 ({\rm BMI}-20.36)^{3}+0.00146043   ({\rm BMI}-24.9)^{3}  \\\\
+& &   -0.0006449759({\rm BMI}-30.64)^{3}  \\\\
+& &  -0.3202284 {\rm WBC}+0.0108545  ({\rm WBC}-5.03)^{3}-0.01778222({\rm WBC}-7.2)^{3}  \\\\
+& &   +0.006927725({\rm WBC}-10.6)^{3}  \\\\
+& & + 0.1917622   {\rm Hemoglobin}+0.003465902 ({\rm Hemoglobin}-11.375)^{3}  \\\\
+& &   -0.007659024({\rm Hemoglobin}-13.63333)^{3}+0.004193122 ({\rm Hemoglobin}-15.5)^{3}  \\\\
+& &  +0.9294109\:{\rm female} -1.109639\:{\rm status} \\\\
+& &  -0.01937676[{\rm mild\ CKD}]-0.6279954 [{\rm mild\ moderate\ CKD}]-0.845451  [{\rm moderate\ severe\ CKD}] \\\\
+& &  -1.812507  [{\rm severe\ CKD}]-1.992212  [{\rm kidney\ failure}] \\\\
+\end{eqnarray*}
+$$
+and \([c]=1\) if subject is in group \(c\), \(0\) otherwise; \((x)=x\) if \(x > 0\), \(0\) otherwise

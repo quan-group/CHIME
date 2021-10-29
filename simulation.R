@@ -1,121 +1,140 @@
+
+# load models -------------------------------------------------------------
 library(rms)
-rm(list = ls())
-load("outcomes_model/final_episodic_models90.Rdata") # 6 outcomes
-load("outcomes_model/final_chronic_models.Rdata") # 6 outcomes
-load("outcomes_model/final_dm_model90.Rdata") # 1 outcome
+library(dplyr)
+library(data.table)
 
-# total outcomes by year
-all_models <- c(chronic_outcomes, episodic_outcomes, list(dm_model = dm_model))
- rm(chronic_outcomes, episodic_outcomes, dm_model); gc()
-#  all patients
+load("CHIME_models.Rdata")
 
+
+# sample data -------------------------------------------------------------
+
+patient <- readRDS("sample_data.rds")
+
+patient <- patient %>%
+  slice(rep(1:n(), each = 20)) 
+patient$year <- rep_len(c(1:20), nrow(patient))
+patient$age <- patient$age + patient$year-1 # baseline = 0
+patient$duration <- patient$duration + patient$year-1 # baseline = 0
+
+
+# dm: patient$status = 2
+# category levels
+# levels(patient$smoking)
+# patient$egfr <- cut(p$egfr, breaks = c(Inf, 90, 60, 45, 30, 15, -Inf), labels = c(1, 2, 3, 4, 5, 6)) 
+# patient$egfr <- factor(p$egfr, levels = c(6, 5, 4, 3, 2, 1), labels = c("normal", "mild", "mild-moderate", "moderate-severe", "severe", "kidney-failure"))
+# levels(patient$egfr)
+
+
+# simulation ----------------------------------------------------------
 set.seed(123)
 
-start_time <- Sys.time()
+FUN.outcomes <- function(model, patient, yr){
+  prob <- survest(model, patient, times = 365.25*(yr))$surv
+  sapply(prob, function(x) sample(c(1, 0), size = 1, replace = T, prob = c(1-x, x)))
+}
 
-FUN.run_outcomes <- function(x, year) {
-  x[year, "amputation"] <- FUN.outcomes(all_models[["amputation_model"]][[1]][[1]], x[year,], year)
-  x[year, "cataract"] <- FUN.outcomes(all_models[["cataract_model"]][[1]][[1]], x[year,], year)
-  x[year, "ihd"] <- ifelse(x[year, "history_ihd"] == 1, 1, FUN.outcomes(all_models[["ihd_model"]][[1]][[1]], x[year,], year))
-  x[year, "heart_failure"] <- ifelse(x[year, "history_heart_failure"] == 1, 1, FUN.outcomes(all_models[["heart_failure_model"]][[1]][[1]], x[year,], year))
-  x[year, "mi"] <- FUN.outcomes(all_models[["mi_model"]][[1]][[1]], x[year,], year)
-  x[year, "neuropathy"] <- ifelse(x[year, "history_neuropathy"] == 1, 1, FUN.outcomes(all_models[["neuropathy_model"]][[1]][[1]], x[year,], year))
-  #  x[year, "proteinuria"] <- ifelse(x[year, "history_proteinuria"] == 1, 1, FUN.outcomes(all_models[["proteinuria_model"]][[1]][[1]], x[year,], year))
-  x[year, "renal_failure"] <- ifelse(x[year, "history_renal_failure"] == 1, 1, FUN.outcomes(all_models[["renal_failure_model"]][[1]][[1]], x[year,], year))
-  x[year, "stroke"] <- FUN.outcomes(all_models[["stroke_model"]][[1]][[1]], x[year,], year)
-  x[year, "ulcer_skin"] <- FUN.outcomes(all_models[["ulcer_skin_model"]][[1]][[1]], x[year,], year)
-  x[year, "pvd"] <- ifelse(x[year, "history_pvd"] == 1, 1, FUN.outcomes(all_models[["pvd_model"]][[1]][[1]], x[year,], year))
-  x[year, "retinopathy"] <- ifelse(x[year, "history_retinopathy"] == 1, 1, FUN.outcomes(all_models[["retinopathy_model"]][[1]][[1]], x[year,], year))
-  # x[year, "haemodialysis"] <- ifelse(x[year, "history_haemodialysis"] == 1, 1, FUN.outcomes(all_models[["haemodialysis_model"]][[1]][[1]], x[year,], year))
-  x[year, "death"] <- FUN.outcomes(all_models[["death_model"]][[1]][[1]], x[year,], year)
+FUN.run_outcomes <- function(x, yr) {
+  x[x$year==yr, "amputation"] <- FUN.outcomes(amputation_model, x[x$year==yr,], yr)
+  x[x$year==yr, "cataract"] <- FUN.outcomes(cataract_model, x[x$year==yr,], yr)
+  x[x$year==yr, "ihd"] <- ifelse(x[x$year==yr, "history_ihd"] == 1, 1, FUN.outcomes(ihd_model, x[x$year==yr,], yr))
+  x[x$year==yr, "heart_failure"] <- ifelse(x[x$year==yr, "history_heart_failure"] == 1, 1, FUN.outcomes(heart_failure_model, x[x$year==yr,], yr))
+  x[x$year==yr, "mi"] <- FUN.outcomes(mi_model, x[x$year==yr,], yr)
+  x[x$year==yr, "neuropathy"] <- ifelse(x[x$year==yr, "history_neuropathy"] == 1, 1, FUN.outcomes(neuropathy_model, x[x$year==yr,], yr))
+  #  x[x$year==yr, "proteinuria"] <- ifelse(x[x$year==yr, "history_proteinuria"] == 1, 1, FUN.outcomes(proteinuria_model, x[x$year==yr,], yr))
+  x[x$year==yr, "renal_failure"] <- ifelse(x[x$year==yr, "history_renal_failure"] == 1, 1, FUN.outcomes(renal_failure_model, x[x$year==yr,], yr))
+  x[x$year==yr, "stroke"] <- FUN.outcomes(stroke_model, x[x$year==yr,], yr)
+  x[x$year==yr, "ulcer_skin"] <- FUN.outcomes(ulcer_skin_model, x[x$year==yr,], yr)
+  x[x$year==yr, "pvd"] <- ifelse(x[x$year==yr, "history_pvd"] == 1, 1, FUN.outcomes(pvd_model, x[x$year==yr,], yr))
+  x[x$year==yr, "retinopathy"] <- ifelse(x[x$year==yr, "history_retinopathy"] == 1, 1, FUN.outcomes(retinopathy_model, x[x$year==yr,], yr))
+  # x[x$year==yr, "haemodialysis"] <- ifelse(x[year, "history_haemodialysis"] == 1, 1, FUN.outcomes(haemodialysis_model, x[x$year==yr,], yr))
+  x[x$year==yr, "death"] <- FUN.outcomes(death_model, x[x$year==yr,], yr)
+  return(x)
+}
+
+# run dm_model if pre-dm (staus = 1)
+# x[x$year==yr & x$status == 1, "status"] <- FUN.outcomes(dm_model, x[x$year==yr & x$status == 1,], yr) + 1
+
+FUN.outcomes2 <- function(model, patient_previous, patient_current, yr){
+  prob <- survest(model, patient_current, times = 365.25*(yr))$surv/survest(model, patient_previous, times = 365.25*(yr-1))$surv
+  prob <- pmin(prob, 1)
+  sapply(prob, function(x) sample(c(1, 0), size = 1, replace = T, prob = c(1-x, x)))
+}
+
+FUN.outcomes2_death <- function(model, patient_previous, patient_current, yr){
+  prob <- survest(model, patient_current, times = 365.25*(yr-1))$surv - survest(model, patient_current, times = 365.25*(yr))$surv
+  prob <- pmax(0, prob)
+  sapply(prob, function(x) sample(c(1, 0), size = 1, replace = T, prob = c(x, 1-x)))
+}
+
+FUN.run_outcomes2 <- function(x, yr) {
+  x[x$year==yr, "amputation"] <- FUN.outcomes2(amputation_model, x[x$year==(yr-1),], x[x$year==yr,], yr)
+  x[x$year==yr, "cataract"] <- FUN.outcomes2(cataract_model, x[x$year==(yr-1),], x[x$year==yr,], yr)
+  x[x$year==yr, "ihd"] <- ifelse(x[x$year==yr, "history_ihd"] == 1, 1, FUN.outcomes2(ihd_model, x[x$year==(yr-1),], x[x$year==yr,], yr))
+  x[x$year==yr, "heart_failure"] <- ifelse(x[x$year==yr, "history_heart_failure"] == 1, 1, FUN.outcomes2(heart_failure_model, x[x$year==(yr-1),], x[x$year==yr,], yr))
+  x[x$year==yr, "mi"] <- FUN.outcomes2(mi_model, x[x$year==(yr-1),], x[x$year==yr,], yr)
+  x[x$year==yr, "neuropathy"] <- ifelse(x[x$year==yr, "history_neuropathy"] == 1, 1, FUN.outcomes2(neuropathy_model, x[x$year==(yr-1),], x[x$year==yr,], yr))
+  #  x[x$year==yr, "proteinuria"] <- ifelse(x[x$year==yr, "history_proteinuria"] == 1, 1, FUN.outcomes2(proteinuria_model, x[x$year==(yr-1),], x[x$year==yr,], yr))
+  x[x$year==yr, "renal_failure"] <- ifelse(x[x$year==yr, "history_renal_failure"] == 1, 1, FUN.outcomes2(renal_failure_model, x[x$year==(yr-1),], x[x$year==yr,], yr))
+  x[x$year==yr, "stroke"] <- FUN.outcomes2(stroke_model, x[x$year==(yr-1),], x[x$year==yr,], yr)
+  x[x$year==yr, "ulcer_skin"] <- FUN.outcomes2(ulcer_skin_model, x[x$year==(yr-1),], x[x$year==yr,], yr)
+  x[x$year==yr, "pvd"] <- ifelse(x[x$year==yr, "history_pvd"] == 1, 1, FUN.outcomes2(pvd_model, x[x$year==(yr-1),], x[x$year==yr,], yr))
+  x[x$year==yr, "retinopathy"] <- ifelse(x[x$year==yr, "history_retinopathy"] == 1, 1, FUN.outcomes2(retinopathy_model, x[x$year==(yr-1),], x[x$year==yr,], yr))
+  # x[x$year==yr, "haemodialysis"] <- ifelse(x[x$year==yr, "history_haemodialysis"] == 1, 1, FUN.outcomes2(haemodialysis_model, x[x$year==(yr-1),], x[x$year==yr,], yr))
+  x[x$year==yr, "death"] <- FUN.outcomes2_death(death_model, x[x$year==(yr-1),], x[x$year==yr,], yr)
   # dm_model
-  if (x[year, "status"] == 1) {
-    x[year, "status"] <- FUN.outcomes(all_models[["dm_model"]][[1]][[1]], x[year,], year) + 1
-  } else {x[year, "status"] <- 2
-  }
+  # x[x$year==yr & x$status == 1, "status"] <- FUN.outcomes(dm_model, x[x$year==yr & x$status == 1,], yr) + 1
+  return(x)
+}
+
+FUN.run_additional_year <- function(x, yr){
+  died <- x$serial_no[!is.na(x$death) & x$death==1]
+  
+  nm1 <- grep("amputation|cataract|ihd|heart_failure|^mi|^history|neuropathy|stroke|ulcer_skin|pvd|retinopathy|renal_failure|status", colnames(x), value=TRUE)
+  nm2 <- paste("lag", nm1, sep="_")
+  x <- data.table(x)
+  x <- x[, (nm2):=lapply(.SD, function(x) c(NA, x[-.N])), by=serial_no, .SDcols=nm1]
+  
+  x[!(x$serial_no %in% died) & x$year==yr,] <- x[!(x$serial_no %in% died) & x$year==yr,] %>% 
+    mutate(history_amputation = pmax(lag_history_amputation, lag_amputation),
+           history_cataract = pmax(lag_history_cataract, lag_cataract),
+           history_ihd = pmax(lag_history_ihd, lag_ihd),
+           history_heart_failure = pmax(lag_history_heart_failure, lag_heart_failure),
+           history_mi = pmax(lag_history_mi, lag_mi),
+           history_neuropathy = pmax(lag_history_neuropathy, lag_neuropathy),
+           history_stroke = pmax(lag_history_stroke, lag_stroke),
+           history_ulcer_skin = pmax(lag_history_ulcer_skin, lag_ulcer_skin),
+           history_pvd = pmax(lag_history_pvd, lag_pvd),
+           history_retinopathy = pmax(lag_history_retinopathy, lag_retinopathy),
+           history_renal_failure = pmax(lag_history_renal_failure, lag_renal_failure),
+           status = pmax(lag_status))
+  x <- x[, !(grepl("^lag", colnames(x))), with = F] # drop lags
+  x[!(x$serial_no %in% died),] <- FUN.run_outcomes2(x[!(x$serial_no %in% died),], yr)
   return(x)
 }
 
 
-patient <- lapply(patient, function(x) FUN.run_outcomes(x, 1))
+# simulation, years ----------------------------------------------------------------
 
+patient <- FUN.run_outcomes(patient, 1)
+patient <- FUN.run_additional_year(patient, 2)
+patient <- FUN.run_additional_year(patient, 3)
+patient <- FUN.run_additional_year(patient, 4)
+patient <- FUN.run_additional_year(patient, 5)
+patient <- FUN.run_additional_year(patient, 6)
+patient <- FUN.run_additional_year(patient, 7)
+patient <- FUN.run_additional_year(patient, 8)
+patient <- FUN.run_additional_year(patient, 9)
+patient <- FUN.run_additional_year(patient, 10)
+patient <- FUN.run_additional_year(patient, 11)
+patient <- FUN.run_additional_year(patient, 12)
+patient <- FUN.run_additional_year(patient, 13)
+patient <- FUN.run_additional_year(patient, 14)
+patient <- FUN.run_additional_year(patient, 15)
+patient <- FUN.run_additional_year(patient, 16)
+patient <- FUN.run_additional_year(patient, 17)
+patient <- FUN.run_additional_year(patient, 18)
+patient <- FUN.run_additional_year(patient, 19)
+patient <- FUN.run_additional_year(patient, 20)
 
-FUN.outcomes2 <- function(model, patient_previous, patient_current, year){
-  prob <- survest(model, patient_current, times = 365.25*(year))$surv/survest(model, patient_previous, times = 365.25*(year-1))$surv
-  prob <- min(prob, 1)
-  sample(c(1, 0), size = 1, replace = T, prob = c(1-prob, prob))
-}
-
-FUN.outcomes2_death <- function(model, patient_previous, patient_current, year){
-  prob <- survest(model, patient_current, times = 365.25*(year-1))$surv - survest(model, patient_current, times = 365.25*(year))$surv
-  prob <- max(0, prob)
-  sample(c(1, 0), size = 1, replace = T, prob = c(prob, 1-prob))
-}
-
-FUN.run_outcomes2 <- function(x, year) {
-  x[year, "amputation"] <- FUN.outcomes2(all_models[["amputation_model"]][[1]][[1]], x[year-1,], x[year,], year)
-  x[year, "cataract"] <- FUN.outcomes2(all_models[["cataract_model"]][[1]][[1]], x[year-1,], x[year,], year)
-  x[year, "ihd"] <- ifelse(x[year, "history_ihd"] == 1, 1, FUN.outcomes2(all_models[["ihd_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  x[year, "heart_failure"] <- ifelse(x[year, "history_heart_failure"] == 1, 1, FUN.outcomes2(all_models[["heart_failure_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  x[year, "mi"] <- FUN.outcomes2(all_models[["mi_model"]][[1]][[1]], x[year-1,], x[year,], year)
-  x[year, "neuropathy"] <- ifelse(x[year, "history_neuropathy"] == 1, 1, FUN.outcomes2(all_models[["neuropathy_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  #  x[year, "proteinuria"] <- ifelse(x[year, "history_proteinuria"] == 1, 1, FUN.outcomes2(all_models[["proteinuria_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  x[year, "renal_failure"] <- ifelse(x[year, "history_renal_failure"] == 1, 1, FUN.outcomes2(all_models[["renal_failure_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  x[year, "stroke"] <- FUN.outcomes2(all_models[["stroke_model"]][[1]][[1]], x[year-1,], x[year,], year)
-  x[year, "ulcer_skin"] <- FUN.outcomes2(all_models[["ulcer_skin_model"]][[1]][[1]], x[year-1,], x[year,], year)
-  x[year, "pvd"] <- ifelse(x[year, "history_pvd"] == 1, 1, FUN.outcomes2(all_models[["pvd_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  x[year, "retinopathy"] <- ifelse(x[year, "history_retinopathy"] == 1, 1, FUN.outcomes2(all_models[["retinopathy_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  # x[year, "haemodialysis"] <- ifelse(x[year, "history_haemodialysis"] == 1, 1, FUN.outcomes2(all_models[["haemodialysis_model"]][[1]][[1]], x[year-1,], x[year,], year))
-  x[year, "death"] <- FUN.outcomes2_death(all_models[["death_model"]][[1]][[1]], x[year-1,], x[year,], year)
-  # dm_model
-  if (x[year, "status"] == 1) {
-    x[year, "status"] <- FUN.outcomes2(all_models[["dm_model"]][[1]][[1]], x[year-1,], x[year,], year) + 1
-  } else {x[year, "status"] <- 2
-  }
-  return(x)
-}
-
-FUN.run_additional_year <- function(x, year){
-  if (x[year-1, "death"] == 0 & !is.na(x[year-1, "death"])) {
-    x[year, "history_amputation"] <- max(x[year-1, "history_amputation"], x[year-1, "amputation"])
-    x[year, "history_cataract"] <- max(x[year-1, "history_cataract"], x[year-1, "cataract"])
-    x[year, "history_ihd"] <- max(x[year-1, "history_ihd"], x[year-1, "ihd"])
-    x[year, "history_heart_failure"] <- max(x[year-1, "history_heart_failure"], x[year-1, "heart_failure"])
-    x[year, "history_mi"] <- max(x[year-1, "history_mi"], x[year-1, "mi"])
-    x[year, "history_neuropathy"] <- max(x[year-1, "history_neuropathy"], x[year-1, "neuropathy"])
-    #    x[year, "history_proteinuria"] <- max(x[year-1, "history_proteinuria"], x[year-1, "proteinuria"])
-    x[year, "history_stroke"] <- max(x[year-1, "history_stroke"], x[year-1, "stroke"])
-    x[year, "history_ulcer_skin"] <- max(x[year-1, "history_ulcer_skin"], x[year-1, "ulcer_skin"])
-    x[year, "history_pvd"] <- max(x[year-1, "history_pvd"], x[year-1, "pvd"])
-    x[year, "history_retinopathy"] <- max(x[year-1, "history_retinopathy"], x[year-1, "retinopathy"])
-    x[year, "history_renal_failure"] <- max(x[year-1, "history_renal_failure"], x[year-1, "renal_failure"])
-    # x[year, "history_haemodialysis"] <- max(x[year-1, "history_haemodialysis"], x[year-1, "haemodialysis"])
-    x[year, "status"] <- x[year-1, "status"]
-    FUN.run_outcomes2(x, year)
-  }
-  else {
-    x[year, "death"] <- NA
-    return(x)
-  }
-}
-
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 2))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 3))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 4))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 5))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 6))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 7))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 8))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 9))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 10))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 11))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 12))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 13))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 14))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 15))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 16))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 17))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 18))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 19))
-patient <- lapply(patient, function(x) FUN.run_additional_year(x, 20))
 

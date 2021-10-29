@@ -1,0 +1,34 @@
+---
+title: "diabetes"
+output: html_document
+---
+
+## Diabetes
+
+\[{\rm Prob}\{T\geq t\} = 1-\Phi( \frac{\log(t)-X\beta}{1.604527} ){\rm \ \ where} \\ \]
+$$
+\begin{eqnarray*}
+{X\hat{\beta}=}\\\\
+& & 4.911377 \\\\
+& & + 0.6414919{\rm HbA1c}-5.706087({\rm HbA1c}-5.5)^{3}+13.3142  ({\rm HbA1c}-5.9)^{3}  \\\\
+& &   -7.608117({\rm HbA1c}-6.2)^{3}  \\\\
+& &  -0.006145417 {\rm SBP}-1.1125\!\times\!10^{-6  }({\rm SBP}-116)^{3}+2.183909\!\times\!10^{-6 }({\rm SBP}-133.6)^{3}  \\\\
+& &   -1.071409\!\times\!10^{-6}({\rm SBP}-151.875)^{3}  \\\\
+& &  -0.3932508{\rm Triglycerides}+0.1237671 ({\rm Triglycerides}-0.7)^{3}-0.18115  ({\rm Triglycerides}-1.21)^{3}  \\\\
+& &   +0.05738291({\rm Triglycerides}-2.31)^{3}  \\\\
+& & + 0.2087609  {\rm HDL}-0.06976457({\rm HDL}-0.95)^{3}+0.1162743  ({\rm HDL}-1.33)^{3}  \\\\
+& &   -0.04650972({\rm HDL}-1.9)^{3}  \\\\
+& & + 0.08693763 {\rm LDL}-0.00724271({\rm LDL}-1.956849)^{3}+0.01369647 ({\rm LDL}-2.95)^{3}  \\\\
+& &   -0.00645376({\rm LDL}-4.06456)^{3}  \\\\
+& & + 0.008889837  {\rm BMI}-0.0003679625({\rm BMI}-20.18)^{3}+0.000669188  ({\rm BMI}-24.725)^{3}  \\\\
+& &   -0.0003012255({\rm BMI}-30.27695)^{3}  \\\\
+& &  -0.08623678  {\rm WBC}+0.000575842  ({\rm WBC}-4.85)^{3}-0.0009413155({\rm WBC}-6.885)^{3}  \\\\
+& &   +0.0003654735 ({\rm WBC}-10.09136)^{3}  \\\\
+& & + 0.189371   {\rm Hemoglobin}-0.01186573({\rm Hemoglobin}-11.4)^{3}  \\\\
+& &   +0.02570909 ({\rm Hemoglobin}-13.5)^{3}-0.01384335({\rm Hemoglobin}-15.3)^{3}  \\\\
+& &  -0.07984426[{\rm Ex\ smoker}]+0.09417903 [{\rm Non\ smoker}] +0.2138855\:{\rm Statins} \\\\
+& &  -0.2382902\:{\rm History\ of\ heart\ failure} -0.2052062\:{\rm History\ of\ myocardial\ infarction} \\\\
+& &  -0.5095882\:{\rm History\ of\ PVD} \\\\
+\end{eqnarray*}
+$$
+and \([c]=1\) if subject is in group \(c\), \(0 \) otherwise; \((x)=x\) if \(x > 0\), \(0 \) otherwise

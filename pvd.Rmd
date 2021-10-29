@@ -1,0 +1,32 @@
+---
+title: "PVD"
+output: html_document
+---
+## Peripheral vascular disease 
+\[{\rm Prob}\{T\geq t\} = 1-\Phi( \frac{\log(t)-X\beta}{3.257492} ){\rm \ \ where} \\ \]
+$$
+\begin{eqnarray*}
+{X\hat{\beta}=}\\\\
+& & 15.66961 \\\\
+& &  -0.07076835 {\rm Age}+1.809499\!\times\!10^{-5}({\rm Age}-45.79055)^{3}  \\\\
+& &   -3.43075\!\times\!10^{-5}({\rm Age}-61.54141)^{3}+1.62125\!\times\!10^{-5 }({\rm Age}-79.12115)^{3}  \\\\
+& &  -0.1320546  {\rm Duration}+0.0006558497({\rm Duration}-0.04654346)^{3}  \\\\
+& &   -0.001322655({\rm Duration}-5.045859)^{3}+0.0006668049({\rm Duration}-9.963039)^{3}  \\\\
+& &  -0.1748719  {\rm HbA1c}+0.004478233 ({\rm HbA1c}-5.6)^{3}-0.005307535({\rm HbA1c}-6.1)^{3}  \\\\
+& &   +0.0008293024({\rm HbA1c}-8.8)^{3}  \\\\
+& & + 0.6125522  {\rm HDL}-0.01699118({\rm HDL}-0.91)^{3}+0.02842449 ({\rm HDL}-1.27)^{3}  \\\\
+& &   -0.01143332({\rm HDL}-1.805)^{3}  \\\\
+& & + 0.07861999   {\rm BMI}-0.0001497577({\rm BMI}-20.37)^{3}+0.0002682072 ({\rm BMI}-24.91)^{3}  \\\\
+& &   -0.0001184495({\rm BMI}-30.65)^{3}  \\\\
+& &  -0.2534007  {\rm WBC}+0.005037967 ({\rm WBC}-5.026583)^{3}-0.008258439({\rm WBC}-7.2)^{3}  \\\\
+& &   +0.003220471 ({\rm WBC}-10.6)^{3}  \\\\
+& & + 0.2629841   {\rm Hemoglobin}-0.000898584({\rm Hemoglobin}-11.4)^{3}  \\\\
+& &   +0.001991456 ({\rm Hemoglobin}-13.65)^{3}-0.001092872({\rm Hemoglobin}-15.5)^{3}  \\\\
+& &  +0.7126738\:{\rm female} \\\\
+& &  +0.1445479[{\rm Ex\ smoker}]+0.8039165[{\rm Non\ smoker}] \\\\
+& &  -0.1557765[{\rm mild\ CKD}]-0.873991 [{\rm mild\ moderate\ CKD}]-0.9208683[{\rm moderate\ severe\ CKD}] \\\\
+& &  -1.351951 [{\rm severe\ CKD}]-2.037225 [{\rm kidney\ failure}] -2.611367\:{\rm History\ of\ amputation} \\\\
+& &  -1.374109\:{\rm History\ of\ ulcer\ of\ skin} \\\\
+\end{eqnarray*}
+$$
+and \([c]=1\) if subject is in group \(c\), \(0\) otherwise; \((x)=x\) if \(x > 0\), \(0 \) otherwise
